@@ -56,15 +56,15 @@ jobs:
       matrix:
         image:
           - bazzite
-          - bazzite-gnome
-          - bazzite-deck
-          - bazzite-deck-gnome
-          - bazzite-deck-nvidia
-          - bazzite-deck-nvidia-gnome
-          - bazzite-nvidia
-          - bazzite-gnome-nvidia
-          - bazzite-nvidia-open
-          - bazzite-gnome-nvidia-open
+          # - bazzite-gnome
+          # - bazzite-deck
+          # - bazzite-deck-gnome
+          # - bazzite-deck-nvidia
+          # - bazzite-deck-nvidia-gnome
+          # - bazzite-nvidia
+          # - bazzite-gnome-nvidia
+          # - bazzite-nvidia-open
+          # - bazzite-gnome-nvidia-open
         include:
           - fedora_version: 43
             kernel_flavor: ogc
