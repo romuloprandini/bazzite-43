@@ -44,14 +44,24 @@ elif [[ "$IMAGE_NAME" == *"nvidia"* ]]; then
     pkgs+=("kernel-nvidia-closed-lts")
 fi
 
+# Collect only RPMs that actually exist in the akmods image
 PKG_PAT=()
+LOCK_PKGS=()
 for pkg in "${pkgs[@]}"; do
-    PKG_PAT+=("/tmp/kernel-rpms/${pkg}-"[0-9]*)
+    shopt -s nullglob
+    matches=("/tmp/kernel-rpms/${pkg}-"[0-9]*)
+    shopt -u nullglob
+    if [[ ${#matches[@]} -gt 0 ]]; then
+        PKG_PAT+=("${matches[@]}")
+        LOCK_PKGS+=("$pkg")
+    else
+        echo "Skipping ${pkg} (not in akmods image)"
+    fi
 done
 
-dnf5 -y install ${PKG_PAT[@]}
+dnf5 -y install "${PKG_PAT[@]}"
 
-dnf5 versionlock add $pkgs
+dnf5 versionlock add "${LOCK_PKGS[@]}"
 
 pushd /usr/lib/kernel/install.d
 mv -f 05-rpmostree.install.bak 05-rpmostree.install
