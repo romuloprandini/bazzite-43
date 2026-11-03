@@ -46,8 +46,7 @@ fi
 
 PKG_PAT=()
 for pkg in "${pkgs[@]}"; do
-    # FIXME: assumes the kernel starts with version 6
-    PKG_PAT+=("/rpms/kernel/${pkg}-6"*)
+    PKG_PAT+=("/tmp/kernel-rpms/${pkg}-"[0-9]*)
 done
 
 dnf5 -y install ${PKG_PAT[@]}
