@@ -1,0 +1,20 @@
+name: Set v43 to upstream tag commit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  set-v43:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Point v43 at tag 43.20260420
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method PATCH \
+            repos/${GITHUB_REPOSITORY}/git/refs/heads/v43 \
+            -f sha=c310fc1a1127f707b8723d46fb8f0c48915d0583 \
+            -F force=true
