@@ -261,6 +261,7 @@ RUN --mount=type=cache,dst=/var/cache \
     dnf5 -y install \
         uld \
         bazaar \
+        kernel-tools \
         iwd \
         greenboot \
         greenboot-default-health-checks \
