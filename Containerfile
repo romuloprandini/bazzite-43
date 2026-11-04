@@ -105,7 +105,7 @@ RUN --mount=type=cache,dst=/var/cache \
     dnf5 -y config-manager addrepo --from-repofile=https://negativo17.org/repos/fedora-rar.repo && \
     dnf5 -y config-manager addrepo --from-repofile=https://pkg.surfacelinux.com/fedora/linux-surface.repo && \
     sed -i 's|baseurl=https://pkg.surfacelinux.com/fedora/f\$releasever/|baseurl=https://pkg.surfacelinux.com/fedora/f42/|' /etc/yum.repos.d/linux-surface.repo && \
-    dnf5 -y config-manager setopt "linux-surface".enabled=false && \
+    dnf5 -y config-manager setopt "linux-surface".enabled=false "linux-surface".exclude="kernel-surface*" && \
     dnf5 -y config-manager setopt "*bazzite*".priority=1 && \
     dnf5 -y config-manager setopt "*terra*".priority=3 "*terra*".exclude="nerd-fonts topgrade scx-tools scx-scheds steam python3-protobuf zlib-devel" && \
     dnf5 -y config-manager setopt "terra-mesa".enabled=false && \
