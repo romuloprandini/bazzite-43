@@ -394,7 +394,7 @@ jobs:
           fi
 
           # Figure out config
-          kver=$(sudo podman run --rm "$img" rpm -q --qf "%{VERSION}-%{RELEASE}.%{ARCH}\n" kernel-core)
+          kver=$(sudo podman run --rm "$img" bash -c 'basename /usr/lib/modules/*')
           filter='{ "packages": [inputs | split(" ") | select(length==2) | { (.[0]): .[1] }] | sort_by(keys) | add }'
           manifest=$(sudo podman run --rm "$img" rpm -qa --qf '%{NAME} %{VERSION}-%{RELEASE}\n' \
               | sed -e 's/\.fc[0-9][0-9]*$//' | jq -Rnc "$filter")
