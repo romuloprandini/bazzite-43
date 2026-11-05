@@ -10,6 +10,7 @@ if [[ -z "$QUALIFIED_KERNEL" || "$QUALIFIED_KERNEL" == "*" ]]; then
     echo "ERROR: No kernel modules directory found in /usr/lib/modules/"
     exit 1
 fi
+/usr/sbin/depmod "$QUALIFIED_KERNEL"
 /usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree --add fido2 -f "/usr/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
 
 chmod 0600 /usr/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
