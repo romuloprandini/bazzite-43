@@ -343,7 +343,7 @@ RUN --mount=type=cache,dst=/var/cache \
         wlr-randr \
         bazzite-portal \
         ls-iommu && \
-    dnf5 -y install --skip-unavailable guestfs-tools && \
+    dnf5 -y install --skip-broken guestfs-tools || true && \
     ln -s /dev/null /etc/NetworkManager/dispatcher.d/04-iscsi && \
     systemctl mask iscsi && \
     systemctl mask wpa_supplicant.service && \
