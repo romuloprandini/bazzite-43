@@ -525,6 +525,7 @@ jobs:
           cosign sign -y --key env://COSIGN_PRIVATE_KEY --new-bundle-format=false ${{ steps.base.outputs.output_image }}@${{ steps.push.outputs.digest }}
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
 
       - name: Install ORAS
         if: github.event_name != 'pull_request'
@@ -558,6 +559,7 @@ jobs:
         if: github.event_name != 'pull_request'
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
           IMAGE: ${{ steps.base.outputs.output_image }}
           SBOM_DIGEST: ${{ steps.upload-sbom.outputs.sbom_digest }}
         run: |
