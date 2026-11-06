@@ -6,25 +6,16 @@ from typing import Any
 import re
 from collections import defaultdict
 
-REGISTRY = "docker://ghcr.io/ublue-os/"
+REGISTRY = "docker://ghcr.io/romuloprandini/"
 
 IMAGES = [
     "bazzite",
-    "bazzite-gnome",
-    "bazzite-deck",
-    "bazzite-deck-gnome",
-    "bazzite-deck-nvidia",
-    "bazzite-deck-nvidia-gnome",
-    "bazzite-nvidia",
-    "bazzite-gnome-nvidia",
-    "bazzite-nvidia-open",
-    "bazzite-gnome-nvidia-open",
 ]
 
 RETRIES = 3
 RETRY_WAIT = 5
 FEDORA_PATTERN = re.compile(r"\.fc\d\d")
-STABLE_START_PATTERN = re.compile(r"\d\d\.\d")
+STABLE_START_PATTERN = re.compile(r"stable-\d\d\.\d")
 OTHER_START_PATTERN = lambda target: re.compile(rf"{target}-\d\d\.\d")
 
 PATTERN_ADD = "\n| ✨ | {name} | | {version} |"
@@ -32,19 +23,13 @@ PATTERN_CHANGE = "\n| 🔄 | {name} | {prev} | {new} |"
 PATTERN_REMOVE = "\n| ❌ | {name} | {version} | |"
 PATTERN_PKGREL_CHANGED = "{prev} ➡️ {new}"
 PATTERN_PKGREL = "{version}"
-COMMON_PAT = "### All Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n"
-OTHER_NAMES = {
-    "desktop": "### Desktop Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
-    "deck": "### Deck Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
-    "kde": "### KDE Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
-    "gnome": "### Gnome Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
-    "nvidia": "### Nvidia Images\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n",
-}
+COMMON_PAT = "### Package Changes\n| | Name | Previous | New |\n| --- | --- | --- | --- |{changes}\n\n"
+OTHER_NAMES = {}
 
 COMMITS_FORMAT = (
     "### Commits\n| Hash | Subject | Author |\n| --- | --- | --- |{commits}\n\n"
 )
-COMMIT_FORMAT = "\n| **[{short}](https://github.com/ublue-os/bazzite/commit/{hash})** | {subject} | {author} |"
+COMMIT_FORMAT = "\n| **[{short}](https://github.com/romuloprandini/bazzite-43/commit/{hash})** | {subject} | {author} |"
 
 CHANGELOG_TITLE = "{tag}: {pretty}"
 CHANGELOG_FORMAT = """\
@@ -59,11 +44,6 @@ From previous `{target}` version `{prev}` there have been the following changes.
 | **Firmware** | {pkgrel:atheros-firmware} |
 | **Mesa** | {pkgrel:mesa-filesystem} |
 | **Gamescope** | {pkgrel:gamescope} |
-| **Bazaar** | {pkgrel:bazaar} |
-| **Gnome** | {pkgrel:gnome-control-center-filesystem} |
-| **KDE** | {pkgrel:plasma-desktop} |
-| **Nvidia** | {pkgrel:nvidia-kmod-common} |
-| **Nvidia LTS** | {pkgrel:nvidia-kmod-common-lts} |
 
 {changes}
 
@@ -83,12 +63,7 @@ BLACKLIST_VERSIONS = [
     "kernel",
     "mesa-filesystem",
     "gamescope",
-    "bazaar",
-    "gnome-control-center-filesystem",
-    "plasma-desktop",
     "atheros-firmware",
-    "nvidia-kmod-common",
-    "nvidia-kmod-common-lts",
 ]
 
 PKG_ALIAS = {
@@ -159,7 +134,12 @@ def get_tags(target: str, manifests: dict[str, Any]):
                 tags.remove(tag)
 
     tags = list(sorted(tags))
-    assert len(tags) > 2, "No current and previous tags found"
+    if len(tags) < 2:
+        # First release -- no previous tag to compare against
+        if len(tags) == 1:
+            return tags[0], tags[0]
+        # No version tags at all -- use target as both
+        return target, target
     return tags[-2], tags[-1]
 
 
